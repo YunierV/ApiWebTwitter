@@ -26,7 +26,7 @@ namespace ApiWebTwitter.Services
 
             foreach (Followed follows in usuario.Followeds)
             {
-                publicaciones.AddRange(follows.UserFollower.Publications);
+                publicaciones.AddRange(follows.UserFollowed.Publications);
             }
 
             // Ordenar las publicaciones por fecha (más reciente primero)
@@ -39,7 +39,7 @@ namespace ApiWebTwitter.Services
                 {
                     autor = p.Author.NickName,
                     mensaje = p.Content,
-                    fecha = p.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")
+                    fecha = p.CreatedDate.ToString("HH:mm")
                 })
             };
 

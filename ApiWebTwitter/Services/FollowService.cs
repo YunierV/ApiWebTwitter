@@ -27,14 +27,15 @@ namespace ApiWebTwitter.Services
             }
 
             // Verificar si ya sigue al usuario
-            var findFollow = usuarioSeguido.Followeds.Find(user => user.UserFollowed.NickName == usuarioSeguidor.NickName);
+            var findFollow = usuarioSeguidor.Followeds.Find(user => user.UserFollowed.NickName == usuarioSeguido.NickName);
             if(findFollow != null)
             {
                 return new { error = "Usuario ya seguido" };
             }
 
             // Agregar seguidor al usuario seguido
-            usuarioSeguido.Followeds.Add(new Followed(usuarioSeguidor, usuarioSeguido));
+            Followed follow = new Followed(usuarioSeguidor, usuarioSeguido);
+            usuarioSeguidor.Followeds.Add(follow);
             
 
             // Generar respuesta JSON indicando éxito

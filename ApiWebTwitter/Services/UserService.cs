@@ -8,7 +8,13 @@ namespace ApiWebTwitter.Services
 
         public UserService()
         {
-            _usuarios = new List<User>();
+            _usuarios =
+            [
+                new User("Alfonso", "@Alfonso"),
+                new User("Alicia", "@Alicia"),
+                new User("Ivan", "@Ivan"),
+            ];
+
         }
 
         public void RegistrarUsuario(string nombre, string nickName)
