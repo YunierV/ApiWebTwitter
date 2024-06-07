@@ -14,28 +14,28 @@ namespace ApiWebTwitter.Services
         public dynamic LeerTimeline(string nickName)
         {
             // Validar usuario por alias
-            User usuario = _userService.ObtenerUsuarioPorAlias(nickName);
-            if (usuario == null)
+            User user = _userService.ObtenerUsuarioPorAlias(nickName);
+            if (user == null)
             {
-                return new { error = $"Usuario no encontrado {nickName}" };
+                throw new Exception("Usuario invalido");
             }
 
             // Obtener publicaciones del timeline del usuario y sus seguidos
-            List<Publication> publicaciones = new List<Publication>();
-            publicaciones.AddRange(usuario.Publications);
+            List<Publication> publications = new List<Publication>();
+            publications.AddRange(user.Publications);
 
-            foreach (Followed follows in usuario.Followeds)
+            foreach (Followed follows in user.Followeds)
             {
-                publicaciones.AddRange(follows.UserFollowed.Publications);
+                publications.AddRange(follows.UserFollowed.Publications);
             }
 
             // Ordenar las publicaciones por fecha (más reciente primero)
-            publicaciones.Sort((a, b) => b.CreatedDate.CompareTo(a.CreatedDate));
+            publications.Sort((a, b) => b.CreatedDate.CompareTo(a.CreatedDate));
 
             // Generar respuesta JSON con las publicaciones del timeline
-            var respuesta = new
+            var res = new
             {
-                publicaciones = publicaciones.Select(p => new
+                publications = publications.Select(p => new
                 {
                     autor = p.Author.NickName,
                     mensaje = p.Content,
@@ -43,7 +43,7 @@ namespace ApiWebTwitter.Services
                 })
             };
 
-            return respuesta;
+            return res;
         }
     }
 }

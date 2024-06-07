@@ -26,45 +26,35 @@ namespace ApiWebTwitter.Controllers
         [HttpPost("post")]
         public IActionResult Publicar(PublicacionDTO publicacionDTO)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
 
-            var respuesta = _publicationService.Publicar(publicacionDTO.Author, publicacionDTO.Content);
+            var res = _publicationService.Publicar(publicacionDTO.Author, publicacionDTO.Content);
 
-            if (respuesta != null)
+            if (res != null)
             {
-                return Ok(respuesta);
+                return Ok(res);
             }
             else
             {
-                return BadRequest(respuesta);
+                return BadRequest(res);
             }
         }
 
         [HttpPost("follow")]
         public IActionResult SeguirUsuario(SeguirDTO seguirDTO)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
 
-            var respuesta = _followService.SeguirUsuario(seguirDTO.AliasSeguidor, seguirDTO.AliasSeguido);
+            var res = _followService.SeguirUsuario(seguirDTO.AliasSeguidor, seguirDTO.AliasSeguido);
 
-            return Ok(respuesta);
-            //if (respuesta)
-            //{
-            //    return Ok(respuesta);
-            //}
-            //else
-            //{
-            //    return BadRequest(respuesta);
-            //}
+            if (res.Exito)
+            {
+                return Ok(res);
+            }
+            
+            return BadRequest(res);
+            
         }
 
-        [HttpGet("dashboard/{user}")]
+        [HttpGet("dashboard")]
         public IActionResult LeerTimeline(string user)
         {
             if (string.IsNullOrEmpty(user))
@@ -72,29 +62,16 @@ namespace ApiWebTwitter.Controllers
                 return BadRequest("El alias del usuario es obligatorio.");
             }
 
-            var respuesta = _readService.LeerTimeline(user);
+            var res = _readService.LeerTimeline(user);
 
-            if (respuesta != null)
+            if (res != null)
             {
-                return Ok(respuesta);
+                return Ok(res);
             }
             else
             {
-                return BadRequest(respuesta);
+                return BadRequest(res);
             }
-        }
-
-        [HttpPost("Registrarusuario")]
-        public List<User> RegistrarUsuario(UsuarioDto user)
-        {
-            _userService.RegistrarUsuario(user.Name, user.NcikName);
-            //return Ok(new
-            //{
-            //    message="Usuario registrado"
-            //});
-            var usuarios = _userService.GetUsuarios();
-            return usuarios;
-        
         }
 
     }

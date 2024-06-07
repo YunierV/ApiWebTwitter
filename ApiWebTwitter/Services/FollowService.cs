@@ -1,4 +1,5 @@
-﻿using ApiWebTwitter.Models;
+﻿using ApiWebTwitter.Dtos;
+using ApiWebTwitter.Models;
 
 namespace ApiWebTwitter.Services
 {
@@ -11,35 +12,50 @@ namespace ApiWebTwitter.Services
             _userService = userService;
         }
 
-        public dynamic SeguirUsuario(string aliasSeguidor, string aliasSeguido)
+        public RespuestaDTO SeguirUsuario(string follower, string followed)
         {
+            RespuestaDTO res = new RespuestaDTO();
+
             // Validar usuarios por alias
-            User usuarioSeguidor = _userService.ObtenerUsuarioPorAlias(aliasSeguidor);
-            if (usuarioSeguidor == null)
+            User userFollower = _userService.ObtenerUsuarioPorAlias(follower);
+
+            if (userFollower == null)
             {
-                return new { error = "Usuario seguidor no encontrado." };
+                res.Exito = false;
+                res.Mensaje = "Usuario seguidor no encontrado";
+
+                return res;
             }
 
-            User usuarioSeguido = _userService.ObtenerUsuarioPorAlias(aliasSeguido);
-            if (usuarioSeguido == null)
+            User userFollowed = _userService.ObtenerUsuarioPorAlias(followed);
+            if (userFollowed == null)
             {
-                return new { error = "Usuario seguido no encontrado." };
+                res.Exito = false;
+                res.Mensaje = "Usuario seguido no encontrado";
+
+                return res;
             }
 
             // Verificar si ya sigue al usuario
-            var findFollow = usuarioSeguidor.Followeds.Find(user => user.UserFollowed.NickName == usuarioSeguido.NickName);
+            var findFollow = userFollower.Followeds.Find(user => user.UserFollowed.NickName == userFollowed.NickName);
             if(findFollow != null)
             {
-                return new { error = "Usuario ya seguido" };
+                res.Exito = false;
+                res.Mensaje = "Usuario ya seguido";
+
+                return res;
+                
             }
 
             // Agregar seguidor al usuario seguido
-            Followed follow = new Followed(usuarioSeguidor, usuarioSeguido);
-            usuarioSeguidor.Followeds.Add(follow);
-            
+            Followed follow = new Followed(userFollower, userFollowed);
+            userFollower.Followeds.Add(follow);
 
-            // Generar respuesta JSON indicando éxito
-            return new { mensaje = "Usuario seguido correctamente."};
+            // Generar respuesta de exito
+            res.Exito = true;
+            res.Mensaje = "Usuario seguido correctamente";
+
+            return res;
         }
     }
 }

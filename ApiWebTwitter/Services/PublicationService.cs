@@ -12,28 +12,28 @@ namespace ApiWebTwitter.Services
             _userService = userService;
         }
 
-        public dynamic Publicar(string alias, string mensaje)
+        public dynamic Publicar(string nickName, string content)
         {
             // Validar usuario por alias
-            User usuario = _userService.ObtenerUsuarioPorAlias(alias);
-            if (usuario == null)
+            User user = _userService.ObtenerUsuarioPorAlias(nickName);
+            if (user == null)
             {
-                return new { error = "Usuario no encontrado." };
+                throw new ArgumentNullException(nameof(user));
             }
 
             // Crear y publicar la publicación
-            Publication publicacion = new Publication(usuario, mensaje);
-            usuario.Publications.Add(publicacion);
+            Publication publication = new Publication(user, content);
+            user.Publications.Add(publication);
 
             // Generar respuesta JSON con la información de la publicación
-            var respuesta = new
+            var res = new
             {
-                autor = usuario.NickName,
-                mensaje = publicacion.Content,
-                fecha = publicacion.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")
+                autor = user.NickName,
+                mensaje = publication.Content,
+                fecha = publication.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")
             };
 
-            return respuesta;
+            return res;
         }
     }
 }
